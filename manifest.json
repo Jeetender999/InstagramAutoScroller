@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Instagram Auto Scroll",
+    "version": "1.0",
+    "description": "Automatically scrolls through Instagram posts with smart timing",
+    "permissions": ["activeTab", "scripting"],
+    "host_permissions": ["*://*.instagram.com/*"],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://*.instagram.com/*"],
+        "js": ["content.js"]
+      }
+    ]
+  }
+  
