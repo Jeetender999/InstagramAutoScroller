@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="container">
-    <h2>Instagram Auto Scroller </h2>
+    <h2>Instagram Auto Scroller</h2>
 
     <!-- Toggle Switch for Dark/Light Mode -->
     <div class="toggle-container">
@@ -20,33 +20,92 @@
       <span>🌙</span>
     </div>
 
-    <div class="control-group">
-      <label>Show each image for (Seconds) </label>
-      <div class="input-group">
-        <input type="number" id="imageTime" value="5">
-    </div>
-    </div>
-
-    <div class="control-group">
-      <label>Play Each Video</label>
-      <div class="radio-group">
-        <div class="radio-option">
-          <input type="radio" id="video1" name="videoPlayCount" value="1" checked>
-          <label for="video1">1 time</label>
-        </div>
-        <div class="radio-option">
-          <input type="radio" id="video2" name="videoPlayCount" value="2">
-          <label for="video2">2 times</label>
-        </div>
-        <div class="radio-option">
-          <input type="radio" id="video3" name="videoPlayCount" value="3">
-          <label for="video3">3 times</label>
-        </div>
+    <!-- Tab Navigation -->
+    <div class="tab-container">
+      <div class="tab-buttons">
+        <button id="feedTab" class="tab-button active">Feed</button>
+        <button id="reelTab" class="tab-button">Reels</button>
       </div>
     </div>
 
-    <button id="startBtn">Start Auto-Scroll</button>
-    <button id="stopBtn">Stop Auto-Scroll</button>
+    <!-- Feed Tab Content -->
+    <div id="feedContent" class="tab-content active">
+      <div class="control-group">
+        <label>Show each image for (Seconds) </label>
+        <div class="input-group">
+          <input type="number" id="imageTime" value="5">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Play Each Video</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="video1" name="videoPlayCount" value="1" checked>
+            <label for="video1">1 time</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="video2" name="videoPlayCount" value="2">
+            <label for="video2">2 times</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="video3" name="videoPlayCount" value="3">
+            <label for="video3">3 times</label>
+          </div>
+        </div>
+      </div>
+
+      <button id="startFeedBtn">Start Feed Auto-Scroll</button>
+      <button id="stopFeedBtn">Stop Feed Auto-Scroll</button>
+    </div>
+
+    <!-- Reel Tab Content -->
+    <div id="reelContent" class="tab-content">
+      <div class="control-group">
+        <label>Play Each Reel</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="reel1" name="reelPlayCount" value="1" checked>
+            <label for="reel1">1 time</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="reel2" name="reelPlayCount" value="2">
+            <label for="reel2">2 times</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="reel3" name="reelPlayCount" value="3">
+            <label for="reel3">3 times</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Scroll Direction</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="directionUp" name="scrollDirection" value="up" checked>
+            <label for="directionUp">Up (Newer)</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="directionDown" name="scrollDirection" value="down">
+            <label for="directionDown">Down (Older)</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Skip When Comments Are Open</label>
+        <div class="toggle-container-small">
+          <label class="switch">
+            <input type="checkbox" id="skipComments">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <button id="startReelBtn">Start Reel Auto-Scroll</button>
+      <button id="stopReelBtn">Stop Reel Auto-Scroll</button>
+    </div>
 
     <div id="message"></div>
   </div>
