@@ -1,6 +1,9 @@
 // Global state for reels
 const reelState = {
     isRunning: false,
+    amountOfPlays: 0, // Adding initialization here
+    isPaused: false, // For comment detection
+    commentCheckInterval: null,
     settings: {
       playCount: 1,
       scrollDirection: "up",
@@ -25,7 +28,56 @@ const reelState = {
   }
   
   function checkIfCommentsAreOpen() {
-    return document.querySelector(COMMENTS_SELECTOR)?.innerText?.length > 0;
+    // Check for comment section dialog or comment UI elements
+    const commentSection = document.querySelector('div[aria-label="Comment"]') || 
+                           document.querySelector('div[aria-label="Comments"]') ||
+                           document.querySelector('section._aamu._ae3_._ae40._ae41') ||
+                           document.querySelector('.BasePortal') ||
+                           (document.querySelector(COMMENTS_SELECTOR)?.innerText?.length > 0);
+    
+    return !!commentSection;
+  }
+  
+  // Start watching for comments
+  function startCommentWatcher() {
+    if (reelState.commentCheckInterval) {
+      clearInterval(reelState.commentCheckInterval);
+    }
+    
+    reelState.commentCheckInterval = setInterval(() => {
+      if (!reelState.isRunning) {
+        clearInterval(reelState.commentCheckInterval);
+        return;
+      }
+      
+      const commentsOpen = checkIfCommentsAreOpen();
+      
+      if (commentsOpen && !reelState.isPaused) {
+        console.log("Comments opened - pausing reel auto-scroll");
+        reelState.isPaused = true;
+        
+        // Pause the current video when comments are open
+        const currentVideo = getCurrentVideo();
+        if (currentVideo) {
+          currentVideo.pause();
+        }
+      } else if (!commentsOpen && reelState.isPaused) {
+        console.log("Comments closed - resuming reel auto-scroll");
+        reelState.isPaused = false;
+        
+        // Resume the current video when comments are closed
+        const currentVideo = getCurrentVideo();
+        if (currentVideo) {
+          currentVideo.play();
+          
+          // Reset the event listener for the resumed video
+          if (reelState.isRunning) {
+            currentVideo.removeEventListener("ended", endVideoEvent);
+            currentVideo.addEventListener("ended", endVideoEvent, { once: true });
+          }
+        }
+      }
+    }, 500);
   }
   
   async function endVideoEvent() {
@@ -36,6 +88,12 @@ const reelState = {
       applicationIsOn: reelState.isRunning,
       currentVideo: getCurrentVideo(),
     });
+  
+    // If paused due to comments, don't proceed with scrolling
+    if (reelState.isPaused) {
+      console.log("Auto-scroll paused due to open comments");
+      return;
+    }
   
     const VIDEOS_LIST = Array.from(document.querySelectorAll(VIDEOS_LIST_SELECTOR));
     const currentVideo = getCurrentVideo();
@@ -48,7 +106,20 @@ const reelState = {
     }
   
     reelState.amountOfPlays++;
-    if (reelState.amountOfPlays < reelState.settings.playCount) return;
+    console.log(`Video played ${reelState.amountOfPlays} time(s) out of ${reelState.settings.playCount}`);
+    
+    if (reelState.amountOfPlays < reelState.settings.playCount) {
+      // If we haven't reached the desired play count, replay the video
+      currentVideo.currentTime = 0;
+      currentVideo.play();
+      
+      // Re-attach the event listener for the next completion
+      currentVideo.addEventListener("ended", endVideoEvent, { once: true });
+      return;
+    }
+  
+    // Reset play count for next video
+    reelState.amountOfPlays = 0;
   
     const index = VIDEOS_LIST.findIndex((vid) => vid.src === currentVideo.src);
     let nextVideo = VIDEOS_LIST[index + (reelState.settings.scrollDirection === "down" ? 1 : -1)];
@@ -87,7 +158,11 @@ const reelState = {
   function startAutoScrolling() {
     reelState.isRunning = true;
     reelState.amountOfPlays = 0;
+    reelState.isPaused = false;
     console.log("🎯 Auto-scrolling enabled. Watching Instagram Reels hands-free! 🎥");
+    
+    // Start comment watcher
+    startCommentWatcher();
     
     // Start monitoring immediately
     const currentVideo = getCurrentVideo();
@@ -100,6 +175,13 @@ const reelState = {
   
   function stopAutoScrolling() {
     reelState.isRunning = false;
+    reelState.isPaused = false;
+    
+    if (reelState.commentCheckInterval) {
+      clearInterval(reelState.commentCheckInterval);
+      reelState.commentCheckInterval = null;
+    }
+    
     const currentVideo = getCurrentVideo();
     if (currentVideo) {
       currentVideo.setAttribute("loop", "true");
@@ -110,7 +192,7 @@ const reelState = {
   
   // Main loop to continuously monitor videos
   function monitorVideosLoop() {
-    if (reelState.isRunning) {
+    if (reelState.isRunning && !reelState.isPaused) {
       const currentVideo = getCurrentVideo();
       if (currentVideo) {
         // Only add the event listener if it doesn't already have one

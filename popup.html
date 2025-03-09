@@ -30,7 +30,7 @@
 
     <!-- Feed Tab Content -->
     <div id="feedContent" class="tab-content active">
-      <div class="control-group">
+      <div class="control-group inline-control">
         <label>Show each image for (Seconds) </label>
         <div class="input-group">
           <input type="number" id="imageTime" value="5">
@@ -83,17 +83,17 @@
         <label>Scroll Direction</label>
         <div class="radio-group">
           <div class="radio-option">
-            <input type="radio" id="directionUp" name="scrollDirection" value="up" checked>
-            <label for="directionUp">Up (Newer)</label>
+            <input type="radio" id="directionDown" name="scrollDirection" value="down">
+            <label for="directionDown">Down (Newer)</label>
           </div>
           <div class="radio-option">
-            <input type="radio" id="directionDown" name="scrollDirection" value="down">
-            <label for="directionDown">Down (Older)</label>
+            <input type="radio" id="directionUp" name="scrollDirection" value="up" checked>
+            <label for="directionUp">Up (Older)</label>
           </div>
         </div>
       </div>
 
-      <div class="control-group">
+      <!-- <div class="control-group">
         <label>Skip When Comments Are Open</label>
         <div class="toggle-container-small">
           <label class="switch">
@@ -101,7 +101,7 @@
             <span class="slider"></span>
           </label>
         </div>
-      </div>
+      </div> -->
 
       <button id="startReelBtn">Start Reel Auto-Scroll</button>
       <button id="stopReelBtn">Stop Reel Auto-Scroll</button>

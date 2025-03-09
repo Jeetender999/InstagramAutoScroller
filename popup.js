@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const stopReelBtn = document.getElementById('stopReelBtn');
     const reelPlayCount = document.getElementsByName("reelPlayCount");
     const scrollDirection = document.getElementsByName("scrollDirection");
-    const skipComments = document.getElementById('skipComments');
+    //const skipComments = document.getElementById('skipComments') || false;
     
     // Common elements
     const messageDiv = document.getElementById('message');
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       'reelState', 
       'reelPlayCount', 
       'scrollDirection', 
-      'skipComments',
+      //'skipComments',
       'activeTab'
     ], (result) => {
       // Feed settings
@@ -95,9 +95,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       }
       
-      if (result.skipComments !== undefined) {
-        skipComments.checked = result.skipComments;
-      }
+    //   if (result.skipComments !== undefined) {
+    //     skipComments.checked = result.skipComments;
+    //   }
   
       // Set active tab
       if (result.activeTab === 'reel') {
@@ -146,9 +146,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
     
-    skipComments.addEventListener('change', () => {
-      chrome.storage.local.set({ skipComments: skipComments.checked });
-    });
+    // skipComments.addEventListener('change', () => {
+    //   chrome.storage.local.set({ skipComments: skipComments.checked });
+    // });
   
     // Check if we're on Instagram
     chrome.runtime.sendMessage({ action: "checkInstagram" }, async (response) => {
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const settings = {
             playCount: playCount,
             scrollDirection: direction,
-            skipWithComments: skipComments.checked
+           // skipWithComments: skipComments.checked
           };
           
           await chrome.tabs.sendMessage(tab.id, { 
